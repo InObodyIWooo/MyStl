@@ -27,6 +27,7 @@ namespace mystl
 	public:
 
 		static void* allocate(size_t n) {
+			std::cout << "malloc" << std::endl;
 			void* result = malloc(n);
 			if (result == NULL) result = oom_malloc(n);
 			return result;

@@ -57,7 +57,7 @@ namespace mystl
 
 	};
 
-	typedef __default_alloc_template<0> alloc;
+	typedef __default_alloc_template<0> _alloc;
 
 	template<int inst>
 	char* __default_alloc_template<inst>::start_free = 0;
@@ -196,7 +196,6 @@ namespace mystl
 		}
 	}
 
-	typedef __default_alloc_template<0> _alloc;
 }
 
 

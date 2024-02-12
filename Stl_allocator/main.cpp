@@ -27,7 +27,7 @@ int main()
 	for (int i = 0; i < 16; i++)cout << p2[i] << ' ';
 	puts("");
 
-	mystl::MyAlloc<int, mystl::_alloc>::deallocate(p2,16);
+	//mystl::MyAlloc<int, mystl::_alloc>::deallocate(p2,16);
 
 
 
