@@ -19,17 +19,15 @@ int main()
 
 	mystl::MyAlloc<int, mystl::_alloc>::deallocate(p);
 
-	p = nullptr;
-	mystl::MyAlloc<int, mystl::_alloc>::deallocate(p);
 
-	//int *p2 = mystl::MyAlloc<int, mystl::_alloc>::allocate(16);
+	int *p2 = mystl::MyAlloc<int, mystl::_alloc>::allocate(16);
 
-	//for (int i = 0; i < 16; i++)p2[i] = i + 1;
+	for (int i = 0; i < 16; i++)p2[i] = i + 1;
 
-	//for (int i = 0; i < 16; i++)cout << p2[i] << ' ';
-	//puts("");
+	for (int i = 0; i < 16; i++)cout << p2[i] << ' ';
+	puts("");
 
-	//mystl::MyAlloc<int, mystl::_alloc>::deallocate(p2,16);
+	mystl::MyAlloc<int, mystl::_alloc>::deallocate(p2,16);
 
 
 

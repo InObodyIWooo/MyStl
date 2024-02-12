@@ -21,14 +21,15 @@ namespace mystl
 		typedef T* pointer;
 		typedef const T* const_pointer;
 		typedef T& reference;
+		typedef pointer& pointer_reference;
 		typedef const T& const_reference;
 		typedef ptrdiff_t difference_type;
 	public :
 
 		static pointer allocate();
 		static pointer allocate(size_t);
-		static void deallocate(pointer);
-		static void deallocate(pointer, size_t);
+		static void deallocate(pointer_reference);
+		static void deallocate(pointer_reference, size_t);
 
 	};
 
@@ -41,21 +42,23 @@ namespace mystl
 	template<class T, class Alloc>
 	typename MyAlloc<T, Alloc>::pointer MyAlloc<T, Alloc>::allocate(size_t n)
 	{
-		return 0 == n ? NULL : (pointer)Alloc::allocate(n * (sizeof value_type));
+		return 0 == n ? nullptr : (pointer)Alloc::allocate(n * (sizeof value_type));
 	}
 
 	template<class T, class Alloc>
-	void MyAlloc<T, Alloc>::deallocate(pointer p)
+	void MyAlloc<T, Alloc>::deallocate(pointer_reference p)
 	{
-		if (p == NULL) { __THROW_ZERO_POINTER }
+		if (p == nullptr) { __THROW_ZERO_POINTER }
 		Alloc::deallocate(p, sizeof value_type);
+		p = nullptr;
 	}
 
 	template<class T, class Alloc>
-	void MyAlloc<T, Alloc>::deallocate(pointer p, size_t n)
+	void MyAlloc<T, Alloc>::deallocate(pointer_reference p, size_t n)
 	{
-		if (p == NULL) { __THROW_ZERO_POINTER }
+		if (p == nullptr) { __THROW_ZERO_POINTER }
 		if (n != 0)Alloc::deallocate(p, n * (sizeof value_type));
+		p = nullptr;
 	}
 
 
