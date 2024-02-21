@@ -37,7 +37,7 @@ namespace mystl
 		_uninitialized_fill_n_aux(ForwardIterator first, Size n, const T& x, std::false_type) {
 		ForwardIterator current = first;
 		for (; n > 0; --n, ++current)
-			constructor(&*current, x);
+			construct(&*current, x);
 		return current;
 	}
 
@@ -64,7 +64,7 @@ namespace mystl
 	inline  void _uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T& x, std::false_type) {
 		ForwardIterator current = first;
 		for (; current != last; ++current)
-			constructor(&*current, x);
+			construct(&*current, x);
 	}
 
 
@@ -94,7 +94,7 @@ namespace mystl
 		_uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator result, std::false_type) {
 		ForwardIterator current = result;
 		for (; first != last; ++first, ++current)
-			constructor(&*current, *first);
+			construct(&*current, *first);
 		return current;
 	}
 }

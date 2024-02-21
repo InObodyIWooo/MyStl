@@ -134,6 +134,7 @@
     <ClInclude Include="Project\include\stl_iterator.h" />
     <ClInclude Include="Project\include\stl_uninitialized.h" />
     <ClInclude Include="Project\include\type_traits.h" />
+    <ClInclude Include="Project\include\vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Project\src\main.cpp" />

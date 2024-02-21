@@ -10,17 +10,17 @@
 namespace mystl
 {
 	template<class T>
-	inline void constructor(T* p) {
+	inline void construct(T* p) {
 		new((void*)p) T();
 	}
 
 	template<class T1, class T2>
-	inline void constructor(T1* p, const T2& value) {
+	inline void construct(T1* p, const T2& value) {
 		new((void*)p) T1(value);
 	}
 
 	template<class T, class... Args>
-	inline void constructor(T* p, Args&&... args) {
+	inline void construct(T* p, Args&&... args) {
 		//TODO: forward
 		//new((void*)p) T1(value);
 	}

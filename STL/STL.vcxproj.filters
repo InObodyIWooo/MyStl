@@ -22,6 +22,12 @@
     <Filter Include="头文件\stl_tool">
       <UniqueIdentifier>{b3b08e5a-768f-4583-9214-90b2d97a421d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\containers">
+      <UniqueIdentifier>{42c0ee98-5798-45f9-b716-a5b4a339f900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\containers\A">
+      <UniqueIdentifier>{cd96f3d1-26d9-4564-82a8-24a90bf10336}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Project\include\stl_alloc.h">
@@ -44,6 +50,9 @@
     </ClInclude>
     <ClInclude Include="Project\include\type_traits.h">
       <Filter>头文件\stl_tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\include\vector.h">
+      <Filter>头文件\containers\A</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

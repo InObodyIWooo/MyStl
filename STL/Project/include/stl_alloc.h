@@ -10,12 +10,12 @@
 #endif
 
 #include "__alloc_template/__default_alloc_template.h"
-
+#include "stl_uninitialized.h"
 
 namespace mystl
 {
 	template<class T,class Alloc>
-	class MyAlloc
+	class m_alloc
 	{
 	public:
 		typedef T value_type;
@@ -34,26 +34,26 @@ namespace mystl
 	};
 
 	template<class T,class Alloc>
-	typename MyAlloc<T, Alloc>::pointer MyAlloc<T, Alloc>::allocate()
+	typename m_alloc<T, Alloc>::pointer m_alloc<T, Alloc>::allocate()
 	{
 		return (pointer)Alloc::allocate(sizeof value_type);
 	}
 
 	template<class T, class Alloc>
-	typename MyAlloc<T, Alloc>::pointer MyAlloc<T, Alloc>::allocate(size_t n)
+	typename m_alloc<T, Alloc>::pointer m_alloc<T, Alloc>::allocate(size_t n)
 	{
 		return 0 == n ? nullptr : (pointer)Alloc::allocate(n * (sizeof value_type));
 	}
 
 	template<class T, class Alloc>
-	void MyAlloc<T, Alloc>::deallocate(pointer p)
+	void m_alloc<T, Alloc>::deallocate(pointer p)
 	{
 		if (p == nullptr) { __THROW_ZERO_POINTER }
 		Alloc::deallocate(p, sizeof value_type);
 	}
 
 	template<class T, class Alloc>
-	void MyAlloc<T, Alloc>::deallocate(pointer p, size_t n)
+	void m_alloc<T, Alloc>::deallocate(pointer p, size_t n)
 	{
 		if (p == nullptr) { __THROW_ZERO_POINTER }
 		if (n != 0)Alloc::deallocate(p, n * (sizeof value_type));
