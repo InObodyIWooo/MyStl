@@ -9,7 +9,7 @@
 #define __THROW_ZERO_POINTER std::cerr << "pointer error" << std::endl; exit(0);
 #endif
 
-#include "__alloc_template/__default_alloc_template.h"
+#include "__default_alloc_template.h"
 
 
 namespace mystl

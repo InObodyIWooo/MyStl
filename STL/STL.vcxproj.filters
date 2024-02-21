@@ -24,25 +24,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Project\include\stl_allocator\stl_alloc.h">
+    <ClInclude Include="Project\include\stl_alloc.h">
       <Filter>头文件\stl_allocator</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\stl_allocator\stl_construct.h">
+    <ClInclude Include="Project\include\stl_construct.h">
       <Filter>头文件\stl_allocator</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\stl_allocator\__alloc_template\__default_alloc_template.h">
+    <ClInclude Include="Project\include\__default_alloc_template.h">
       <Filter>头文件\stl_allocator\__alloc_template</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\stl_allocator\__alloc_template\__malloc_alloc_template.h">
+    <ClInclude Include="Project\include\__malloc_alloc_template.h">
       <Filter>头文件\stl_allocator\__alloc_template</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\stl_tool\stl_iterator.h">
+    <ClInclude Include="Project\include\stl_iterator.h">
       <Filter>头文件\stl_tool</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\stl_tool\stl_uninitialized.h">
+    <ClInclude Include="Project\include\stl_uninitialized.h">
       <Filter>头文件\stl_tool</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\stl_tool\type_traits.h">
+    <ClInclude Include="Project\include\type_traits.h">
       <Filter>头文件\stl_tool</Filter>
     </ClInclude>
   </ItemGroup>
