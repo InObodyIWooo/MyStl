@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{db4e1a7a-73ba-4fe8-9723-e55570cc4bca}</ProjectGuid>
-    <RootNamespace>Stlallocator</RootNamespace>
+    <ProjectGuid>{2a3bb014-6ff7-44b7-920d-35d9352ad90f}</ProjectGuid>
+    <RootNamespace>STL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,16 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="stl_alloc.h" />
-    <ClInclude Include="stl_construct.h" />
-    <ClInclude Include="stl_iterator.h" />
-    <ClInclude Include="stl_uninitialized.h" />
-    <ClInclude Include="type_traits.h" />
-    <ClInclude Include="__default_alloc_template.h" />
-    <ClInclude Include="__malloc_alloc_template.h" />
+    <ClInclude Include="Project\include\stl_allocator\stl_alloc.h" />
+    <ClInclude Include="Project\include\stl_allocator\stl_construct.h" />
+    <ClInclude Include="Project\include\stl_allocator\__alloc_template\__default_alloc_template.h" />
+    <ClInclude Include="Project\include\stl_allocator\__alloc_template\__malloc_alloc_template.h" />
+    <ClInclude Include="Project\include\stl_tool\stl_iterator.h" />
+    <ClInclude Include="Project\include\stl_tool\stl_uninitialized.h" />
+    <ClInclude Include="Project\include\stl_tool\type_traits.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Project\src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
