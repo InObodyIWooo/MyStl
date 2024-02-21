@@ -7,8 +7,6 @@
 #include <new>
 
 
-
-
 namespace mystl
 {
 	template<class T>
