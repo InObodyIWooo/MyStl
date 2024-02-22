@@ -16,6 +16,6 @@ int main()
 
 	vector<int> a;
 	mystl::vector<int> b;
-	a.ca
+	a.begin()
 	return 0;
 }
