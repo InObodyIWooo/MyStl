@@ -28,24 +28,6 @@ namespace mystl
 		iterator finish;	//已使用空间的尾指针
 		iterator end_heap;		//未使用空间的尾指针
 
-		//插入元素，当容器已满时自动扩容，除push_back()调用过外 其他用途未知
-		void insert_aux(iterator position,const_reference value);
-
-		void deallocate() {
-			if (start != nullptr)data_alloc::deallocate(start, size_type(end_heap - start));
-		}
-
-		iterator allocate_fill(size_type n, const_reference value) {
-			iterator res = data_alloc::allocate(n);
-			uninitialized_fill_n(res, n, value);
-			return res;
-		}
-
-		void initialize_fill(size_type n, const_reference value) {
-			start = allocate_fill(n, value);
-			end_heap = finish = start + n;
-		}
-
 	public:
 		iterator begin() const { return start; }
 		const_iterator cbegin() const { return start; }
@@ -59,6 +41,26 @@ namespace mystl
 
 		const_reference front() const { return *(begin()); }
 		const_reference back() const { return *(end() - 1); }
+
+	protected:
+
+		//插入元素，当容器已满时自动扩容，除push_back()调用过外 其他用途未知
+		void insert_aux(iterator position,const_reference value);
+
+		void deallocate() {
+			if (start != nullptr)data_alloc::deallocate(start, capacity());
+		}
+
+		iterator allocate_fill(size_type n, const_reference value) {
+			iterator res = data_alloc::allocate(n);
+			uninitialized_fill_n(res, n, value);
+			return res;
+		}
+
+		void initialize_fill(size_type n, const_reference value) {
+			start = allocate_fill(n, value);
+			end_heap = finish = start + n;
+		}
 
 	public:
 		vector() :start(nullptr), finish(nullptr), end_heap(nullptr) {}
@@ -87,7 +89,7 @@ namespace mystl
 		void insert(iterator position, size_type n, const_reference value);
 
 		iterator erase(iterator first, iterator last) {
-			iterator res = copy(last, finish, first);
+			iterator res = std::copy(last, finish, first);
 			destroy(res, finish);
 			finish -= (last - first);
 			return first;
@@ -118,14 +120,89 @@ namespace mystl
 			construct(finish, *(finish - 1));
 			++finish;
 			value_type value_copy = value;
-			copy_back(position, finish - 2, finish - 1);
+			std::copy_backward(position, finish - 2, finish - 1);
 			*position = value_copy;
+		}
+		else
+		{
+			size_type old_size = size(), new_size = size() == 0 ? 1 : 2 * size();
+
+			iterator new_start = data_alloc::allocate(new_size);
+			iterator new_finish = new_start;
+
+			try
+			{
+				new_finish = uninitialized_copy(start, position, new_finish);
+				construct(new_finish, value);
+				++new_finish;
+				new_finish = uninitialized_copy(position, finish, new_finish);
+			}
+			catch (const std::exception&)
+			{
+				destroy(new_start, new_finish);
+				data_alloc::deallocate(new_start, new_size);
+				throw;
+			}
+
+			destroy(start, finish);
+			deallocate();
+
+			start = new_start;
+			finish = new_finish;
+			end_heap = new_start + new_size;
 		}
 	}
 
 	template<class T, class Alloc>
 	void vector<T, Alloc>::insert(iterator position, size_type n, const_reference value) {
+		if (n == 0)return;
 
+		if (capacity() - size() >= n)
+		{
+			value_type value_copy = value;
+			size_type last_elem = finish - position;
+			iterator old_finish = finish;
+			if (last_elem > n) {
+				uninitialized_copy(finish - n, finish, finish);
+				finish += n;
+				std::copy_backward(position, old_finish - n, old_finish);
+				std::fill(position, position + n,value_copy);
+			}
+			else {
+				uninitialized_fill_n(finish, n - last_elem, value_copy);
+				finish += n - last_elem;
+				uninitialized_copy(position, old_finish, finish);
+				finish += last_elem;
+				std::fill(position, old_finish, value_copy);
+			}
+		}
+		else {
+			size_type old_size = size();
+			size_type new_size = old_size + std::max(old_size, n);//TODO: max()
+
+			iterator new_start = data_alloc::allocate(new_size);
+			iterator new_finish = new_start;
+
+			try
+			{
+				new_finish = uninitialized_copy(start, position, new_finish);
+				new_finish = uninitialized_fill_n(new_finish, n, value);
+				new_finish = uninitialized_copy(position, finish, new_finish);
+			}
+			catch (const std::exception&)
+			{
+				destroy(new_start, new_finish);
+				data_alloc::deallocate(new_start, new_size);
+				throw;
+			}
+
+			destroy(start, finish);
+			deallocate();
+
+			start = new_start;
+			finish = new_finish;
+			end_heap = new_start + new_size;
+		}
 	}
 
 }
