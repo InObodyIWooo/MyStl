@@ -18,8 +18,8 @@ namespace mystl
 	struct bidirection_iterator_tag : public forward_iterator_tag {};
 	struct random_access_iterator_tag : public bidirection_iterator_tag {};
 
-	template<class T,class Category, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
-	struct iterator 
+	template<class T,class Category, class Pointer = T*, class Reference = T&, class Distance = ptrdiff_t>
+	struct iterator
 	{
 		typedef Category	iterator_category;
 		typedef T			value_type;

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Project\include\list.h" />
     <ClInclude Include="Project\include\stl_alloc.h" />
     <ClInclude Include="Project\include\stl_construct.h" />
     <ClInclude Include="Project\include\__alloc_template\__default_alloc_template.h" />

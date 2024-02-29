@@ -6,6 +6,7 @@
 #include "../include/stl_construct.h"
 #include "../include/stl_uninitialized.h"
 #include "../include/vector.h"
+#include "../include/list.h"
 
 #include <vector>
 using namespace std;
