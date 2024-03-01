@@ -9,12 +9,12 @@
 #include "../include/list.h"
 
 #include <vector>
+#include <list>
 using namespace std;
 
 
 int main()
 {
-
 	vector<int> a;
 	mystl::vector<int> b;
 

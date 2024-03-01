@@ -22,7 +22,8 @@ namespace mystl
 	template<class T, class... Args>
 	inline void construct(T* p, Args&&... args) {
 		//TODO: forward
-		//new((void*)p) T1(value);
+		//new((void*)p) T(value);
+		new((void*)p) T(std::forward<Args>(args)...);
 	}
 
 

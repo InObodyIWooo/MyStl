@@ -29,9 +29,9 @@ namespace mystl
 		iterator end_heap;		//未使用空间的尾指针
 
 	public:
-		iterator begin() const { return start; }
+		iterator begin()  { return start; }
 		const_iterator cbegin() const { return start; }
-		iterator end() const { return finish; }
+		iterator end()  { return finish; }
 		const_iterator cend() const { return finish; }
 
 		size_type size() const { return size_type(end() - begin()); }
