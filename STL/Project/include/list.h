@@ -27,13 +27,17 @@ namespace mystl
 		using reference = mystl::iterator<T, bidirection_iterator_tag, Ptr, Ref>::reference;
 		using pointer = mystl::iterator<T, bidirection_iterator_tag, Ptr, Ref>::pointer;
 		using difference_type = mystl::iterator<T, bidirection_iterator_tag, Ptr, Ref>::difference_type;
+		using iterator_category = mystl::iterator<T, bidirection_iterator_tag, Ptr, Ref>::iterator_category;
 
 		pointer_node node;
 
 		_list_iterator() {}
-		_list_iterator(const iterator& x) :node(x.node) {}
+		//_list_iterator(const iterator& x) :node(x.node) {}
 		_list_iterator(pointer_node x) :node(x) {}
-		_list_iterator(const self& x) :node(x.node) {}
+		//_list_iterator(const self& x,int inst = 0) :node(x.node) {}
+		template<class InputIterator>
+		_list_iterator(const InputIterator& x) : node(&(*x)) {}
+
 
 		bool operator ==(const self& x) { return node == x.node; }
 		bool operator !=(const self& x) { return node != x.node; }
@@ -148,19 +152,78 @@ namespace mystl
 		size_type size() { return size_list; }
 
 		reference front() { return *begin(); }
-		reference back() { return *end(); }
+		reference back() { return *(--end()); }
 	public:
 		list() { empty_initialize(); }
-		list(const list& left) : list() { copy_list(left.begin(), lefe.end()); }
+		list(const list& left) : list() { copy_list(left.begin(), left.end()); }
 		//list(list&& right) {}
-		list(size_type n) : list() { fill_list(n, value_type()); }
+		explicit list(size_type n) : list() { fill_list(n, value_type()); }
 		list(size_type n, const T& x) : list() { fill_list(n, x); }
 		template<class InputIterator>
 		list(InputIterator first, InputIterator last) : list() { copy_list(first, last); }
 
+		iterator insert(iterator position, const T& x);
+		iterator insert(iterator position, size_type n, const T& x);
+		template<class InputIterator>
+		iterator insert(iterator position, InputIterator first, InputIterator last);
 
+		iterator erase(iterator position);
+		iterator erase(iterator firsr, iterator last);
 
+	public:
+
+		void push_back(const T& x) { insert(end(), x); }
+		void push_front(const T& x) { insert(begin(), x); }
+		void pop_back() { }
+		void pop_front() {  }
 	};
+
+
+	template<class T,class Alloc>
+	typename list<T,Alloc>::iterator 
+		list<T,Alloc>::insert(iterator position, const T& x) {
+		pointer_node tmp = create_node(x);
+		tmp->next = position.node;
+		tmp->prev = position.node->prev;
+		position.node->prev->next = tmp;
+		position.node->prev = tmp;
+		++size_list;
+		return position;
+	}
+
+	template<class T, class Alloc>
+	typename list<T, Alloc>::iterator
+		list<T, Alloc>::insert(iterator position, size_type n, const T& x) {
+		while(n--)insert(position, x);
+		return position;
+	}
+
+	template<class T, class Alloc> template<class InputIterator>
+	typename list<T, Alloc>::iterator
+		list<T, Alloc>::insert(iterator position, InputIterator first, InputIterator last) {
+		size_type n = distance(first, last);
+		for (; n > 0; --n, ++first)insert(position, *first);
+		return position;
+	}
+
+	template<class T,class Alloc>
+	typename list<T,Alloc>::iterator
+		list<T, Alloc>::erase(iterator position) {
+		pointer_node res = position.node->next;
+		position.node->prev->next = res;
+		res->prev = position.node->prev;
+		--size_list;
+		destroy_node(position.node);
+		return res;
+	}
+
+	template<class T, class Alloc>
+	typename list<T, Alloc>::iterator
+		list<T, Alloc>::erase(iterator first, iterator last) {
+		size_type n = distance(first, last);
+		for (; n > 0; --n, --first)erase(first);
+		return last;
+	}
 }
 
 #endif // !__STL_LIST_H

@@ -98,7 +98,7 @@ namespace mystl
 	template<class InputIterator>
 	inline typename iterator_traits<InputIterator>::difference_type
 		distance(InputIterator first, InputIterator last) {
-		return _distance(first,last,iterator_category(InputIterator));
+		return _distance(first,last,iterator_category(InputIterator()));
 	}
 
 	//advance

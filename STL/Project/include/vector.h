@@ -34,13 +34,13 @@ namespace mystl
 		iterator end()  { return finish; }
 		const_iterator cend() const { return finish; }
 
-		size_type size() const { return size_type(end() - begin()); }
+		size_type size()  { return size_type(end() - begin()); }
 		size_type capacity() const { return size_type(end_heap - start); }
 		bool empty() const { return begin() == end(); }
 		reference operator[](size_type n) { return *(begin() + n); }
 
-		const_reference front() const { return *(begin()); }
-		const_reference back() const { return *(end() - 1); }
+		const_reference front()  { return *(begin()); }
+		const_reference back()  { return *(end() - 1); }
 
 	protected:
 
