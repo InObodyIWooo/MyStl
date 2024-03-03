@@ -38,7 +38,7 @@ namespace mystl
 		template<class InputIterator>
 		_list_iterator(const InputIterator& x) : node(&(*x)) {}
 
-
+		self& operator= (const pointer_node& x) { node = x; return *this; }
 		bool operator ==(const self& x) { return node == x.node; }
 		bool operator !=(const self& x) { return node != x.node; }
 
@@ -74,7 +74,8 @@ namespace mystl
 	{
 	public:
 		typedef T					value_type;
-		typedef T& reference;
+		typedef T&					reference;
+		typedef const T&			const_reference;
 		typedef size_t				size_type;
 		typedef ptrdiff_t			difference_type;
 		typedef _list_iterator<T, T*, T&> iterator;
@@ -90,7 +91,7 @@ namespace mystl
 		pointer_node get_node() { return data_allocator::allocate(); }
 		void put_node(pointer_node p) { data_allocator::deallocate(p); }
 
-		pointer_node create_node(const value_type & x)
+		pointer_node create_node(const_reference x)
 		{
 			pointer_node res = get_node();
 			construct(&res->data, x);
@@ -105,43 +106,65 @@ namespace mystl
 
 		void empty_initialize() { last_node = get_node(); size_list = 0; last_node->next = last_node; last_node->prev = last_node; }
 
-		void link_node_at_back(pointer_node p)
+		iterator link_node_at_pos(iterator position, pointer_node p)
 		{
-			p->prev = last_node->prev;
-			(last_node->prev)->next = p;
-			last_node->prev = p;
-			p->next = last_node;
+			pointer_node pos = position.node;
+			p->prev = pos->prev;
+			(pos->prev)->next = p;
+			pos->prev = p;
+			p->next = pos;
 			++size_list;
+			return p;
 		}
 
-		pointer_node delet_node_from_back()
+		iterator delet_node_from_pos(iterator position)
 		{
-			pointer_node res = last_node->prev;
-			last_node->prev = res->prev;
-			res->prev->next = last_node;
+			pointer_node res = position.node->next;
+			res->prev = position.node->prev;
+			position.node->prev->next = res;
+			destroy_node(position.node);
 			--size_list;
 			return res;
 		}
-		void fill_list(size_type n, const value_type& x)
+		iterator fill_list(iterator position ,size_type n, const_reference x)
 		{
-			for (;n > 0 ; --n)
+			iterator res = position;
+			while(n--)
 			{
 				pointer_node t = create_node(x);
-				link_node_at_back(t);
+				res = link_node_at_pos(res,t);
 			}
+			return res;
 		}
 
 		template<class InputIterator>
-		void copy_list(InputIterator first, InputIterator last)
+		iterator copy_list(iterator position, InputIterator first, InputIterator last)
 		{
+			iterator res = position;
 			size_type n = distance(first, last);
-			for (; n > 0; --n,++first)
+			while(n--)
 			{
-				pointer_node t = create_node(*first);
-				link_node_at_back(t);
+				pointer_node t = create_node(*(--last));
+				res = link_node_at_pos(res,t);
 			}
+			return res;
 		}
 
+		void transfer(iterator position, iterator first, iterator last) {
+			if (position != last && first != last)
+			{
+				size_list += distance(first, last);
+				iterator tmp = last.node->prev;
+				first.node->prev->next = last.node;
+				last.node->prev = first.node->prev;
+				position.node->prev->next = first.node;
+				first.node->prev = position.node->prev;
+				position.node->prev = tmp.node;
+				tmp.node->next = position.node;
+			}
+
+		}
+		pointer_node _sort(pointer_node& first, size_type n);
 	public:
 		iterator begin() { return last_node->next; }
 		const_iterator cbegin() const { return last_node->next; }
@@ -155,75 +178,192 @@ namespace mystl
 		reference back() { return *(--end()); }
 	public:
 		list() { empty_initialize(); }
-		list(const list& left) : list() { copy_list(left.begin(), left.end()); }
+		list(const list& left) : list() { copy_list(begin(), left.begin(), left.end()); }
 		//list(list&& right) {}
-		explicit list(size_type n) : list() { fill_list(n, value_type()); }
-		list(size_type n, const T& x) : list() { fill_list(n, x); }
+		explicit list(size_type n) : list() { fill_list(begin(), n, value_type()); }
+		list(size_type n, const_reference x) : list() { fill_list(begin(), n, x); }
 		template<class InputIterator>
-		list(InputIterator first, InputIterator last) : list() { copy_list(first, last); }
+		list(InputIterator first, InputIterator last) : list() { copy_list(begin(), first, last); }
 
-		iterator insert(iterator position, const T& x);
-		iterator insert(iterator position, size_type n, const T& x);
-		template<class InputIterator>
+		iterator insert(iterator position, const_reference x);
+		iterator insert(iterator position, size_type n, const_reference x);
+
+		//只有当InputItrator为迭代器时，enable_if才会有type，调用模板实例化
+		template<class InputIterator, typename std::enable_if<std::_Is_iterator<InputIterator>::value, int>::type = 0>
 		iterator insert(iterator position, InputIterator first, InputIterator last);
 
 		iterator erase(iterator position);
 		iterator erase(iterator firsr, iterator last);
 
+		void swap(list& x)
+		{
+			iterator first = begin();
+			size_type t = size();
+			transfer(begin(), x.begin(), x.end());
+			x.size_list = 0;
+			x.transfer(x.begin(), first, end());
+			size_list -= t;
+		}
+
+		void clear();
+		//除去与x相同的元素
+		void remove(const_reference x);
+		//除去连续相同的元素
+		void unique();
+
+		//x不能与*this相同
+		void splice(iterator position, list& x);
+		void splice(iterator position, /*list&,*/ iterator i);
+		//position不能位于[first,last)之内
+		void splice(iterator position, /*list&,*/ iterator first, iterator last);
+
+		//将x合并到*this，两个list必须是有序的且为递增
+		void merge(list& x);
+		void reverse();
+		void sort() { _sort(last_node->next, size_list); }
+
 	public:
 
-		void push_back(const T& x) { insert(end(), x); }
-		void push_front(const T& x) { insert(begin(), x); }
-		void pop_back() { }
-		void pop_front() {  }
+		void push_back(const_reference x) { insert(end(), x); }
+		void push_front(const_reference x) { insert(begin(), x); }
+		void pop_back() { erase(--end()); }
+		void pop_front() { erase(begin()); }
 	};
 
 
 	template<class T,class Alloc>
 	typename list<T,Alloc>::iterator 
-		list<T,Alloc>::insert(iterator position, const T& x) {
-		pointer_node tmp = create_node(x);
-		tmp->next = position.node;
-		tmp->prev = position.node->prev;
-		position.node->prev->next = tmp;
-		position.node->prev = tmp;
-		++size_list;
-		return position;
+		list<T,Alloc>::insert(iterator position, const_reference x) {
+		pointer_node p = create_node(x);
+		return link_node_at_pos(position, p);
 	}
 
 	template<class T, class Alloc>
 	typename list<T, Alloc>::iterator
-		list<T, Alloc>::insert(iterator position, size_type n, const T& x) {
-		while(n--)insert(position, x);
-		return position;
+		list<T, Alloc>::insert(iterator position, size_type n, const_reference x) {
+		return fill_list(position, n, x);
 	}
 
-	template<class T, class Alloc> template<class InputIterator>
+	template<class T, class Alloc> template<class InputIterator,typename std::enable_if<std::_Is_iterator<InputIterator>::value,int>::type>
 	typename list<T, Alloc>::iterator
 		list<T, Alloc>::insert(iterator position, InputIterator first, InputIterator last) {
-		size_type n = distance(first, last);
-		for (; n > 0; --n, ++first)insert(position, *first);
-		return position;
+		return copy_list(position, first, last);
 	}
 
 	template<class T,class Alloc>
 	typename list<T,Alloc>::iterator
 		list<T, Alloc>::erase(iterator position) {
-		pointer_node res = position.node->next;
-		position.node->prev->next = res;
-		res->prev = position.node->prev;
-		--size_list;
-		destroy_node(position.node);
-		return res;
+		return delet_node_from_pos(position);
 	}
 
 	template<class T, class Alloc>
 	typename list<T, Alloc>::iterator
 		list<T, Alloc>::erase(iterator first, iterator last) {
 		size_type n = distance(first, last);
-		for (; n > 0; --n, --first)erase(first);
+		iterator tmp = first;
+		while(n--)tmp = delet_node_from_pos(tmp);
 		return last;
 	}
+
+	template<class T,class Alloc>
+	void list<T, Alloc>::clear() {
+		erase(begin(), end());
+	}
+
+	template<class T,class Alloc>
+	void list<T, Alloc>::remove(const_reference x) {
+		iterator cur = begin();
+		while (cur != end())
+		{
+			iterator tmp = cur++;
+			if (*tmp == x)delet_node_from_pos(tmp);
+		}
+	}
+
+	template<class T, class Alloc>
+	void list<T, Alloc>::unique() {
+		iterator cur = begin();
+		iterator next = cur;
+		while (++next != end())
+		{
+			if (*cur == *next)erase(next);
+			else cur = next;
+			next = cur;
+		}
+	}
+
+	template<class T, class Alloc>
+	void list<T, Alloc>::splice(iterator position, list& x) {
+		if (!x.empty())
+			transfer(position, x.begin(), x.end());
+	}
+
+	template<class T, class Alloc>
+	void list<T, Alloc>::splice(iterator position, /*list&,*/ iterator i) {
+		iterator last = i;
+		++last;
+		if (position == i || position == last)return;
+		transfer(position, i, last);
+	}
+
+	template<class T, class Alloc>
+	void list<T, Alloc>::splice(iterator position, /*list&,*/ iterator first, iterator last) {
+		if (first != last)
+			transfer(position, first, last);
+	}
+
+	template<class T, class Alloc>
+	void list<T, Alloc>::merge(list& x) {
+		iterator first1 = begin(), last1 = end(),first2 = x.begin(), last2 = x.end();
+
+		while (first1 != last1 && first2 != last2)
+		{
+			if (*first2 < *first1) {
+				iterator next = first2;
+				transfer(first1, first2, ++next);
+				first2 = next;
+			}
+			else ++first1;
+		}
+		if (first2 != last2)transfer(last1, first2, last2);
+		x.size_list = 0;
+	}
+
+	template<class T, class Alloc>
+	void list<T, Alloc>::reverse() {
+		iterator cur = begin();
+		++cur;
+		while (cur != end())
+		{
+			iterator old = cur;
+			++cur;
+			transfer(begin(), old, cur);
+		}
+	}
+
+	template<class T, class Alloc>
+	typename list<T,Alloc>::pointer_node
+		list<T, Alloc>::_sort(pointer_node& first, size_type n) {
+		//sort [first,first + n) return first + n
+		if (!n)return first;
+		else if (n == 1)return first->next;
+		pointer_node mid = _sort(first, n / 2);
+		pointer_node last = _sort(mid, n - n / 2);
+		iterator i = first, j = mid,newhead = first->prev;
+		while (i != mid && j != last)
+		{
+			if (*j < *i)
+			{
+				iterator old = j;
+				++j;
+				transfer(i, old, j);
+			}
+			else ++i;
+		}
+		first = newhead.node->next;
+		return last;
+	}
+
 }
 
 #endif // !__STL_LIST_H

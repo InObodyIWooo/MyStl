@@ -10,33 +10,29 @@
 
 #include <vector>
 #include <list>
+#include <algorithm>
+#include <Windows.h>
+#include <time.h>
 using namespace std;
 
 
 int main()
 {
-	mystl::list<int> a;
+	mystl::list<int> a,b;
 	//list<int> a;
-	for (int i = 0; i < 10; i++)a.push_back(i + 1);
+	for (int i = 0; i < 1e6; i++)a.push_front(i + 1);
+	//for (auto c : a)cout << c << ' ';
+	//puts("");
 
-	cout << a.front() << ' ' << a.back() << endl;
+	clock_t time_start, time_finish;
+	time_start = clock();
+	a.sort();
+	time_finish = clock();
+	cout << "运行时间: " << double(time_finish - time_start) / CLOCKS_PER_SEC << endl;
 
-	cout << a.size() << endl;
-	cout << a.empty() << endl;
 
-	for (auto c : a)cout << c << ' ';
-	puts("");
-
-	a.insert(a.begin(), a.begin(), a.end());
-
-	for (auto c : a)cout << c << ' ';
-	puts("");
-	cout << a.size() << endl;
-	a.erase(--a.end());
-
-	for (auto c : a)cout << c << ' ';
-	puts("");
-
+	//for (auto c : a)cout << c << ' ';
+	//puts("");
 
 	//vector<int> a;
 	//mystl::vector<int> b;
