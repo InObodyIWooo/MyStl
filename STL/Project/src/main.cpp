@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <list>
+#include <deque>
 #include <algorithm>
 #include <Windows.h>
 #include <time.h>
@@ -29,7 +30,6 @@ int main()
 	a.sort();
 	time_finish = clock();
 	cout << "运行时间: " << double(time_finish - time_start) / CLOCKS_PER_SEC << endl;
-
 
 	//for (auto c : a)cout << c << ' ';
 	//puts("");

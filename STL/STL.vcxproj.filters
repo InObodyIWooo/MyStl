@@ -57,6 +57,9 @@
     <ClInclude Include="Project\include\list.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
+    <ClInclude Include="Project\include\deque.h">
+      <Filter>头文件\containers\A</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Project\src\main.cpp">

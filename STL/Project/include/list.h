@@ -39,8 +39,8 @@ namespace mystl
 		_list_iterator(const InputIterator& x) : node(&(*x)) {}
 
 		self& operator= (const pointer_node& x) { node = x; return *this; }
-		bool operator ==(const self& x) { return node == x.node; }
-		bool operator !=(const self& x) { return node != x.node; }
+		bool operator ==(const self& x) const { return node == x.node; }
+		bool operator !=(const self& x) const { return node != x.node; }
 
 		reference operator*() const { return (*node).data; }
 		pointer operator->() const { return  &(operator*()); }
