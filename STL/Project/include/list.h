@@ -32,9 +32,7 @@ namespace mystl
 		pointer_node node;
 
 		_list_iterator() {}
-		//_list_iterator(const iterator& x) :node(x.node) {}
 		_list_iterator(pointer_node x) :node(x) {}
-		//_list_iterator(const self& x,int inst = 0) :node(x.node) {}
 		template<class InputIterator>
 		_list_iterator(const InputIterator& x) : node(&(*x)) {}
 

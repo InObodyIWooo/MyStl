@@ -32,6 +32,8 @@ namespace mystl
 		T* last;
 		T* cur;
 
+		_deque_iterator(const self& x) :node(x.node), first(x.first), last(x.last), cur(x.cur) {}
+
 		//cur需要根据情况自行设置
 		void set_node(const map& x)
 		{
@@ -107,7 +109,41 @@ namespace mystl
 		bool operator <(const self& x) const { return node == x.node ? cur < x.cur : node < x.node; }
 	};
 
+	template<class T,class Alloc = _alloc,size_t BuffSize = 0>
+	class deque
+	{
+	public :
+		typedef T value_type;
+		typedef T* pointer;
+		typedef T& reference;
+		typedef const T& const_reference;
+		typedef size_t size_type;
+		typedef _deque_iterator<T, T*, T&, BuffSize> iterator;
+		typedef _deque_iterator<T, const T*, const T&, BuffSize> const_iterator;
+	protected:
+		typedef m_alloc<value_type, Alloc> data_allocator;
+		typedef m_alloc<pointer, Alloc> map_allocator;
+		typedef pointer* map_pointer;
+		map_pointer map;//存储node，node指向缓冲区(存储T元素)
+		size_type map_size;
+		iterator start;
+		iterator finish;
+	protected:
+		void fill_initialize(size_type n, const_reference x);
+		void create_map_node(size_type elements);
+	public:
+		deque() :map(0), map_size(0), start(), finish() {  }
+		deque(size_type n, const_reference x) :deque() { fill_initialize(n, x); }
 
+	public:
+		iterator begin() { return start; }
+		iterator end() { return finish; }
+		reference front() { return *begin(); }
+		reference back() { return *(end() - 1); }
+		bool empty() const { return start == finish; }
+		size_type size() const { return size_type(finish - start); }
+
+	};
 
 }
 
