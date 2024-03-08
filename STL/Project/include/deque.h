@@ -137,9 +137,13 @@ namespace mystl
 		}
 		void create_map_node(size_type elements);
 		void fill_initialize(size_type n, const_reference x);
-		void reserve_map_at_back();
-		void reserve_map_at_front();
-
+		void reallocate_map(size_type num_node_to_add, bool add_to_front);
+		void reserve_map_at_back(size_type num_node_to_add = 1) {
+			if (map_size - (finish.node - map + 1) < num_node_to_add)reallocate_map(num_node_to_add, false);
+		}
+		void reserve_map_at_front(size_type num_node_to_add = 1) {
+			if (start.node - map < num_node_to_add)reallocate_map(num_node_to_add, true);
+		}
 		void push_back_aux(const_reference x);
 		void push_front_aux(const_reference x);
 		void pop_back_aux();
@@ -294,6 +298,11 @@ namespace mystl
 		data_allocator::deallocate(*start.node);
 		start.set_node(start.node + 1);
 		start.cur = start.first;
+	}
+
+	template<class T,class Alloc,size_t BuffSize>
+	void deque<T, Alloc, BuffSize>::reallocate_map(size_type num_node_to_add, bool add_to_front) {
+
 	}
 }
 
