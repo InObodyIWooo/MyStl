@@ -7,6 +7,7 @@
 #include "../include/stl_uninitialized.h"
 #include "../include/vector.h"
 #include "../include/list.h"
+#include "../include/deque.h"
 
 #include <vector>
 #include <list>
@@ -24,12 +25,12 @@ int main()
 	for (int i = 0; i < 1e6; i++)a.push_front(i + 1);
 	//for (auto c : a)cout << c << ' ';
 	//puts("");
-
 	clock_t time_start, time_finish;
 	time_start = clock();
-	a.sort();
+	//a.sort();
 	time_finish = clock();
 	cout << "运行时间: " << double(time_finish - time_start) / CLOCKS_PER_SEC << endl;
+
 
 	//for (auto c : a)cout << c << ' ';
 	//puts("");

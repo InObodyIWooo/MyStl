@@ -58,7 +58,7 @@ namespace mystl
 			}
 			return *this;
 		}
-		self operator++(int) {
+		self operator++(int) const {
 			self res = *this;
 			++*this;
 			return res;
@@ -72,7 +72,7 @@ namespace mystl
 			--cur;
 			return *this;
 		}
-		self operator--(int) {
+		self operator--(int) const {
 			self res = *this;
 			--*this;
 			return res;
@@ -100,8 +100,8 @@ namespace mystl
 			return res -= n;
 		}
 
-		reference operator[](difference_type n) {
-			return *(*this + n)
+		reference operator[](difference_type n) const {
+			return *(*this + n);
 		}
 
 		bool operator==(const self& x) const { return cur == x.cur; }
@@ -129,8 +129,22 @@ namespace mystl
 		iterator start;
 		iterator finish;
 	protected:
-		void fill_initialize(size_type n, const_reference x);
+		size_type initial_map_size() { return size_type(8); }
+		size_type buffer_size() { return iterator::buffer_size(); }
+		pointer node_allocate() {
+			pointer res = data_allocator::allocate(buffer_size());
+			return res;
+		}
 		void create_map_node(size_type elements);
+		void fill_initialize(size_type n, const_reference x);
+		void reserve_map_at_back();
+		void reserve_map_at_front();
+
+		void push_back_aux(const_reference x);
+		void push_front_aux(const_reference x);
+		void pop_back_aux();
+		void pop_front_aux();
+
 	public:
 		deque() :map(0), map_size(0), start(), finish() {  }
 		deque(size_type n, const_reference x) :deque() { fill_initialize(n, x); }
@@ -143,8 +157,144 @@ namespace mystl
 		bool empty() const { return start == finish; }
 		size_type size() const { return size_type(finish - start); }
 
+		void push_back(const_reference x) {
+			if (finish.cur != finish.last - 1) {
+				construct(finish.cur, x);
+				++finish.cur;
+			}
+			else push_back_aux(x);
+		}
+		void push_front(const_reference x) {
+			if (start.cur != start.first) {
+				construct(start.cur - 1, x);
+				++start.cur;
+			}
+			else push_front_aux(x);
+		}
+		void pop_back() {
+			if (finish.cur != finish.first) {
+				--finish.cur;
+				destroy(finish.cur);
+			}
+			else pop_back_aux();
+		}
+		void pop_front() {
+			if (start.cur != start.last - 1) {
+				destroy(start.cur);
+				++start.cur;
+			}
+			else pop_front_aux();
+		}
+		void insert(iterator position, const_reference x);
+		void insert(iterator position, size_type n, const_reference x);
+		template<class InputIterator,typename = std::enable_if<std::_Is_iterator<InputIterator>::value,int>::type>
+		void insert(iterator position, InputIterator first, InputIterator last);
+
+		iterator erase(iterator position);
+		iterator erase(iterator first, iterator last);
+
 	};
 
+	template<class T,class Alloc,size_t BuffSize>
+	void deque<T,Alloc,BuffSize>::fill_initialize(size_type n, const_reference x) {
+		create_map_node(n);
+		map_pointer cur;
+
+		try
+		{
+			for (cur = start.node; cur < finish.node; ++cur) {
+				uninitialized_fill(*cur, *cur + buffer_size(), x);
+			}
+			uninitialized_fill(finish.first, finish.cur, x);
+		}
+		catch (...)
+		{
+			throw;
+		}
+	}
+
+	template<class T, class Alloc, size_t BuffSize>
+	void deque<T, Alloc, BuffSize>::create_map_node(size_type elements) {
+		size_type num_node = elements / buffer_size() + 1;
+		map_size = max(num_node + 2, initial_map_size());
+		map = map_allocator::allocate(map_size);
+
+		map_pointer nstart = map + (map_size - num_node) / 2, nfinish = nstart + num_node - 1;
+		map_pointer cur;
+		try
+		{
+			for (cur = start.node; cur <= finish.node; ++cur) {
+				*cur = node_allocate();
+			}
+		}
+		catch (...)
+		{
+			for (cur = start.node; cur <= finish.node; ++cur) {
+				data_allocator::deallocate(*cur);
+			}
+			throw;
+		}
+
+		start.set_node(nstart);
+		finish.set_node(nfinish);
+		start.cur = start.last;
+		finish.cur = finish.first + elements % buffer_size();
+	}
+
+	template<class T,class Alloc,size_t BuffSize>
+	void deque<T, Alloc, BuffSize>::push_back_aux(const_reference x) {
+		value_type x_copy = x;
+		reserve_map_at_back();
+		*(finish.node + 1) = node_allocate();
+		try 
+		{
+			construct(finish.cur, x_copy);
+			finish.set_node(finish.node + 1);
+			finish.cur = finish.first;
+		}
+		catch (...)
+		{
+			data_allocator::deallocate(*finish.node);
+			finish.set_node(finish.node - 1);
+			finish.cur = finish.last - 1;
+			destroy(finish.cur);
+			throw;
+		}
+	}
+	template<class T, class Alloc, size_t BuffSize>
+	void deque<T, Alloc, BuffSize>::push_front_aux(const_reference x) {
+		value_type x_copy = x;
+		reserve_map_at_front();
+		*(start.node - 1) = node_allocate();
+		try
+		{
+			start.set_node(start.node - 1);
+			start.cur = start.last - 1;
+			construct(start.cur, x_copy);
+		}
+		catch (...)
+		{
+			destroy(start.cur);
+			data_allocator::deallocate(*start.node);
+			start.set_node(start.node + 1);
+			start.cur = start.first;
+			throw;
+		}
+	}
+	template<class T, class Alloc, size_t BuffSize>
+	void deque<T, Alloc, BuffSize>::pop_back_aux() {
+		data_allocator::deallocate(*finish.node);
+		finish.set_node(finish.node - 1);
+		finish.cur = finish.last - 1;
+		destroy(finish.cur);
+	}
+	template<class T, class Alloc, size_t BuffSize>
+	void deque<T, Alloc, BuffSize>::pop_front_aux() {
+		destroy(start.cur);
+		data_allocator::deallocate(*start.node);
+		start.set_node(start.node + 1);
+		start.cur = start.first;
+	}
 }
 
 #endif 

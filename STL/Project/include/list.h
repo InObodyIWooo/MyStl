@@ -187,7 +187,7 @@ namespace mystl
 		iterator insert(iterator position, size_type n, const_reference x);
 
 		//只有当InputItrator为迭代器时，enable_if才会有type，调用模板实例化
-		template<class InputIterator, typename std::enable_if<std::_Is_iterator<InputIterator>::value, int>::type = 0>
+		template<class InputIterator, typename = std::enable_if<std::_Is_iterator<InputIterator>::value, int>::type>
 		iterator insert(iterator position, InputIterator first, InputIterator last);
 
 		iterator erase(iterator position);
@@ -242,7 +242,7 @@ namespace mystl
 		return fill_list(position, n, x);
 	}
 
-	template<class T, class Alloc> template<class InputIterator,typename std::enable_if<std::_Is_iterator<InputIterator>::value,int>::type>
+	template<class T, class Alloc> template<class InputIterator,typename>
 	typename list<T, Alloc>::iterator
 		list<T, Alloc>::insert(iterator position, InputIterator first, InputIterator last) {
 		return copy_list(position, first, last);
