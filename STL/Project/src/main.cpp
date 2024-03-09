@@ -25,6 +25,11 @@ int main()
 	for (int i = 0; i < 1e6; i++)a.push_front(i + 1);
 	//for (auto c : a)cout << c << ' ';
 	//puts("");
+
+	int c = 10, d;
+	cout << ((d = c)++) << endl;
+
+	cout << d << endl;
 	clock_t time_start, time_finish;
 	time_start = clock();
 	//a.sort();
