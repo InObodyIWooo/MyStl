@@ -20,21 +20,20 @@ using namespace std;
 
 int main()
 {
-	mystl::list<int> a,b;
-	//list<int> a;
-	for (int i = 0; i < 1e6; i++)a.push_front(i + 1);
-	//for (auto c : a)cout << c << ' ';
-	//puts("");
+	mystl::deque<int> a;
+	//deque<int>a;
+	for (int i = 0; i < 10; i++)a.push_back(i + 1);
 
-	int c = 10, d;
-	cout << ((d = c)++) << endl;
+	cout << *a.begin() << ' ' << *(a.end() - 1) << endl;
+	cout << a.size() << ' ' << a.empty() << endl;
+	//a.erase(a.begin(), a.end());
+	a.erase(a.begin(),a.begin()+2);
+	cout << a.front() << ' ' << a.back() << endl;
+	cout << a.size() << ' ' << a.empty() << endl;
 
-	cout << d << endl;
-	clock_t time_start, time_finish;
-	time_start = clock();
-	//a.sort();
-	time_finish = clock();
-	cout << "运行时间: " << double(time_finish - time_start) / CLOCKS_PER_SEC << endl;
+	//for (auto i = a.begin(); i != a.end(); ++i)cout << *i << ' ';
+	for (auto c : a)cout << c << ' ';
+	puts("");
 
 
 	//for (auto c : a)cout << c << ' ';

@@ -48,7 +48,7 @@ namespace mystl
 	}
 
 	template<class ForwardIterator>
-	inline void _destroy_aux(ForwardIterator first, ForwardIterator last, std::true_type) {}
+	inline void _destroy_aux(ForwardIterator first, ForwardIterator last, std::true_type) { }
 
 	template<class ForwardIterator, class T>
 	inline void _destroy(ForwardIterator first, ForwardIterator last, T*) {

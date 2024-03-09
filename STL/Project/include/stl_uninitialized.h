@@ -59,7 +59,7 @@ namespace mystl
 	template<class ForwardIterator, class T, class T1>
 	inline  void _uninitialized_fill(ForwardIterator first, ForwardIterator last, const T& x, T1*) {
 		typedef typename std::is_pod<T1> is_Pod;
-		return _uninitialized_fill_n_aux(first, last, x, is_Pod());
+		return _uninitialized_fill_aux(first, last, x, is_Pod());
 	}
 
 	template<class ForwardIterator, class T>
@@ -97,6 +97,38 @@ namespace mystl
 	inline ForwardIterator
 		uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator result) {
 		return _uninitialized_copy(first, last, result, value_type(result));
+	}
+
+	//uninitialized_copy_n
+
+	template<class InputIterator, class ForwardIterator>
+	inline ForwardIterator
+		_uninitialized_copy_n_aux(InputIterator first, ptrdiff_t n, ForwardIterator result, std::true_type) {
+		//TODO: copy_n();
+		return std::copy_n(first, n, result);
+	}
+
+	template<class InputIterator, class ForwardIterator>
+	inline ForwardIterator
+		_uninitialized_copy_n_aux(InputIterator first, ptrdiff_t n, ForwardIterator result, std::false_type) {
+		ForwardIterator current = result;
+		for (; n > 0;--n, ++first, ++current)
+			construct(&*current, *first);
+		return current;
+	}
+
+	template<class InputIterator, class ForwardIterator, class T1>
+	inline ForwardIterator
+		_uninitialized_copy_n(InputIterator first, ptrdiff_t n, ForwardIterator result, T1*) {
+		typedef typename std::is_pod<T1> is_Pod;
+		return _uninitialized_copy_n_aux(first, n, result, is_Pod());
+	}
+
+
+	template<class InputIterator, class ForwardIterator>
+	inline ForwardIterator
+		uninitialized_copy_n(InputIterator first, ptrdiff_t n, ForwardIterator result) {
+		return _uninitialized_copy_n(first, n, result, value_type(result));
 	}
 
 }
