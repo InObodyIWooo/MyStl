@@ -22,12 +22,13 @@ int main()
 {
 	mystl::deque<int> a;
 	//deque<int>a;
-	for (int i = 0; i < 10; i++)a.push_back(i + 1);
+	for (int i = 0; i < 10; i++)a.push_back(i+1);
 
 	cout << *a.begin() << ' ' << *(a.end() - 1) << endl;
 	cout << a.size() << ' ' << a.empty() << endl;
 	//a.erase(a.begin(), a.end());
-	a.erase(a.begin(),a.begin()+2);
+	//a.erase(a.begin(),a.begin()+2);
+	a.insert(a.insert(a.begin(), 99),98);
 	cout << a.front() << ' ' << a.back() << endl;
 	cout << a.size() << ' ' << a.empty() << endl;
 

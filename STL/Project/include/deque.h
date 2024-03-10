@@ -242,7 +242,7 @@ namespace mystl
 	void deque<T, Alloc, BuffSize>::push_front(const_reference x) {
 		if (start.cur != start.first) {
 			construct(start.cur - 1, x);
-			++start.cur;
+			--start.cur;
 		}
 		else push_front_aux(x);
 	}
