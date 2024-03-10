@@ -425,7 +425,7 @@ namespace mystl
 		if (i < size() / 2) {
 			difference_type num_empty_node = (n - (start.cur - start.first)) / buffer_size() + 1;
 			reserve_map_at_front(num_empty_node);
-			iterator nstart = start + n;
+			iterator nstart = start - n;
 			uninitialized_copy_n(start, i, nstart);
 		}
 		else if (i >= size() / 2) {
