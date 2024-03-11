@@ -322,7 +322,6 @@ namespace mystl
 	void deque<T, Alloc, BuffSize>::reallocate_map(size_type num_node_to_add, bool add_to_front) {
 		difference_type old_node_num = finish.node - start.node + 1; 
 		size_type new_node_num = old_node_num + num_node_to_add;
-
 		map_pointer nstart;
 		if (map_size > 2 * new_node_num) {
 			nstart = map + (map_size - new_node_num) / 2 + (add_to_front ? num_node_to_add : 0);
@@ -331,7 +330,7 @@ namespace mystl
 		}
 		else
 		{
-			size_type new_map_size = map_size + std::max(map_size, num_node_to_add) + 2;
+			size_type new_map_size = map_size + std::max(map_size, num_node_to_add);
 			map_pointer new_map = map_allocator::allocate(new_map_size);
 			nstart = new_map + (new_map_size - new_node_num) / 2 + (add_to_front ? num_node_to_add : 0);
 			std::copy(start.node, finish.node + 1, nstart);
@@ -422,20 +421,106 @@ namespace mystl
 	typename deque<T, Alloc, BuffSize>::iterator
 		deque<T, Alloc, BuffSize>::insert(iterator position, size_type n, const_reference x) {
 		difference_type i = position - start;
+		iterator res = position;
 		if (i < size() / 2) {
-			difference_type num_empty_node = (n - (start.cur - start.first)) / buffer_size() + 1;
+			difference_type empty_nums = start.cur - start.first;
+			difference_type num_empty_node = n > empty_nums ? (n - empty_nums) / buffer_size() + 1 : 0;
 			reserve_map_at_front(num_empty_node);
+			for (map_pointer cur = start.node - 1; num_empty_node > 0; --num_empty_node, --cur)*cur = node_allocate();
 			iterator nstart = start - n;
-			uninitialized_copy_n(start, i, nstart);
+			if (n < i) {
+				iterator fill_first = start + i - n;
+				iterator copy_end = start + n;
+				uninitialized_copy(start, copy_end, nstart);
+				std::copy(copy_end, position, start);
+				std::fill(fill_first, position, x);
+			}
+			else {
+				uninitialized_copy(start, position, nstart);
+				iterator first = nstart + i;
+				uninitialized_fill(first, start, x);
+				std::fill(start, position, x);
+			}
+			start = nstart;
+			res = start + i;
 		}
 		else if (i >= size() / 2) {
-
+			difference_type empty_nums = finish.last - finish.cur;
+			difference_type num_empty_node = n < empty_nums ? 0 : (n - empty_nums) / buffer_size() + 1;
+			reserve_map_at_back(num_empty_node);
+			for (map_pointer cur = finish.node + 1; num_empty_node > 0; --num_empty_node, ++cur)*cur = node_allocate();
+			difference_type last_elements = finish - position;
+			iterator nfinish = finish + n;
+			if (n < last_elements) {
+				iterator copy_first = finish - n;
+				iterator fill_end = finish - last_elements + n;
+				uninitialized_copy(copy_first, finish, finish);
+				std::copy_backward(position, copy_first, finish);
+				std::fill(position, fill_end, x);
+			}
+			else {
+				iterator end = nfinish - last_elements;
+				uninitialized_copy(position, finish, end);
+				uninitialized_fill(finish, end, x);
+				std::fill(position, finish, x);
+			}
+			finish = nfinish;
 		}
+		return res;
 	}
 	template<class T, class Alloc, size_t BuffSize> template<class InputIterator, typename>
 	typename deque<T, Alloc, BuffSize>::iterator
 		deque<T, Alloc, BuffSize>::insert(iterator position, InputIterator first, InputIterator last) {
-
+		difference_type n = last - first;
+		difference_type i = position - start;
+		iterator res = position;
+		if (i < size() / 2) {
+			difference_type empty_nums = start.cur - start.first;
+			difference_type num_empty_node = n > empty_nums ? (n - empty_nums) / buffer_size() + 1 : 0;
+			reserve_map_at_front(num_empty_node);
+			for (map_pointer cur = start.node - 1; num_empty_node > 0; --num_empty_node, --cur)*cur = node_allocate();
+			iterator nstart = start - n;
+			if (n < i) {
+				iterator fill_first = start + i - n;
+				iterator copy_end = start + n;
+				uninitialized_copy(start, copy_end, nstart);
+				std::copy(copy_end, position, start);
+				std::copy(first, last, fill_first);
+			}
+			else {
+				uninitialized_copy(start, position, nstart);
+				iterator copy_first = nstart + i;
+				size_type copy_nums = n - i;
+				uninitialized_copy(first, first + copy_nums, copy_first);
+				std::copy(first + copy_nums, last, start);
+			}
+			start = nstart;
+			res = start + i;
+		}
+		else if (i >= size() / 2) {
+			difference_type empty_nums = finish.last - finish.cur;
+			difference_type num_empty_node = n < empty_nums ? 0 : (n - empty_nums) / buffer_size() + 1;
+			reserve_map_at_back(num_empty_node);
+			for (map_pointer cur = finish.node + 1; num_empty_node > 0; --num_empty_node, ++cur)*cur = node_allocate();
+			difference_type last_elements = finish - position;
+			iterator nfinish = finish + n;
+			if (n < last_elements) {
+				iterator copy_first = finish - n;
+				iterator fill_end = finish - last_elements + n;
+				uninitialized_copy(copy_first, finish, finish);
+				std::copy_backward(position, copy_first, finish);
+				std::copy_backward(first, last, fill_end);
+			}
+			else {
+				iterator end = nfinish - last_elements;
+				uninitialized_copy(position, finish, end);
+				size_type copy_nums = n - last_elements;
+				uninitialized_copy(first, first + copy_nums, finish);
+				std::copy(first + copy_nums, last, position);
+			}
+			finish = nfinish;
+		}
+		return res;
 	}
 
 	template<class T,class Alloc,size_t BuffSize>

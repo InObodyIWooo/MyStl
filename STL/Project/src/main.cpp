@@ -21,19 +21,15 @@ using namespace std;
 int main()
 {
 	mystl::deque<int> a;
+	mystl::deque<char> b;
 	//deque<int>a;
-	for (int i = 0; i < 10; i++)a.push_back(i+1);
+	//deque<char>b;
+	for (int i = 0; i < 10; i++)a.push_back(i+1),b.push_back(char('a' + i));
 
-	cout << *a.begin() << ' ' << *(a.end() - 1) << endl;
-	cout << a.size() << ' ' << a.empty() << endl;
-	//a.erase(a.begin(), a.end());
-	//a.erase(a.begin(),a.begin()+2);
-	a.insert(a.insert(a.begin(), 99),98);
-	cout << a.front() << ' ' << a.back() << endl;
-	cout << a.size() << ' ' << a.empty() << endl;
+	a.insert(a.begin(), b.begin() + 5, b.end());
 
-	//for (auto i = a.begin(); i != a.end(); ++i)cout << *i << ' ';
-	for (auto c : a)cout << c << ' ';
+	for (auto i = a.begin(); i != a.end(); ++i)cout << *i << ' ';
+	//for (auto c : a)cout << c << ' ';
 	puts("");
 
 
