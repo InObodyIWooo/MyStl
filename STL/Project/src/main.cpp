@@ -8,10 +8,13 @@
 #include "../include/vector.h"
 #include "../include/list.h"
 #include "../include/deque.h"
+#include "../include/stack.h"
+#include "../include/queue.h"
 
 #include <vector>
 #include <list>
 #include <deque>
+#include <stack>
 #include <algorithm>
 #include <Windows.h>
 #include <time.h>
@@ -20,18 +23,6 @@ using namespace std;
 
 int main()
 {
-	mystl::deque<int> a;
-	mystl::deque<char> b;
-	//deque<int>a;
-	//deque<char>b;
-	for (int i = 0; i < 10; i++)a.push_back(i+1),b.push_back(char('a' + i));
-
-	a.insert(a.begin(), b.begin() + 5, b.end());
-
-	for (auto i = a.begin(); i != a.end(); ++i)cout << *i << ' ';
-	//for (auto c : a)cout << c << ' ';
-	puts("");
-
 
 	//for (auto c : a)cout << c << ' ';
 	//puts("");
