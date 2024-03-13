@@ -66,6 +66,9 @@
     <ClInclude Include="Project\include\queue.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
+    <ClInclude Include="Project\include\heap.h">
+      <Filter>头文件\stl_tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Project\src\main.cpp">
