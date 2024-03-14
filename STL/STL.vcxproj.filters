@@ -66,8 +66,11 @@
     <ClInclude Include="Project\include\queue.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
+    <ClInclude Include="Project\include\priority_queue.h">
+      <Filter>头文件\containers\A</Filter>
+    </ClInclude>
     <ClInclude Include="Project\include\heap.h">
-      <Filter>头文件\stl_tool</Filter>
+      <Filter>头文件\containers\A</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

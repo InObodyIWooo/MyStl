@@ -130,6 +130,7 @@
     <ClInclude Include="Project\include\deque.h" />
     <ClInclude Include="Project\include\heap.h" />
     <ClInclude Include="Project\include\list.h" />
+    <ClInclude Include="Project\include\priority_queue.h" />
     <ClInclude Include="Project\include\queue.h" />
     <ClInclude Include="Project\include\stack.h" />
     <ClInclude Include="Project\include\stl_alloc.h" />

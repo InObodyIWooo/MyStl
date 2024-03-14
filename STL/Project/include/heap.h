@@ -12,16 +12,32 @@ namespace mystl
 	inline void _push_heap_aux(RandomAccessIterator first, RandomAccessIterator last, Distance*, T*, Compare& cmp);
 	template<class RandomAccessIterator, class Distance, class T, class Compare>
 	inline void _push_heap(RandomAccessIterator first, Distance holeIndex, Distance topIndex, T value, Compare& cmp);
-
 	template<class RandomAccessIterator, class Distance, class T, class Compare>
 	inline void _pop_heap_aux(RandomAccessIterator first, RandomAccessIterator last, Distance*, T*, Compare& cmp);
 	template<class RandomAccessIterator, class Distance, class T, class Compare>
 	inline void _pop_heap(RandomAccessIterator first, RandomAccessIterator last, RandomAccessIterator result, T value, Distance*, Compare& cmp);
 	template<class RandomAccessIterator, class Distance, class T, class Compare>
 	void _adjust_heap(RandomAccessIterator first, Distance holeIndex, Distance len, T value, Compare& cmp);
-
 	template<class RandomAccessIterator, class Distance, class T, class Compare>
 	void _make_heap(RandomAccessIterator first, RandomAccessIterator last, Distance*, T*, Compare& cmp);
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	template<class RandomAccessIterator, class Compare = std::less<typename iterator_traits<RandomAccessIterator>::value_type> >
+	inline void push_heap(RandomAccessIterator first, RandomAccessIterator last, Compare cmp = Compare());
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	template<class RandomAccessIterator, class Compare = std::less<typename iterator_traits<RandomAccessIterator>::value_type> >
+	inline void pop_heap(RandomAccessIterator first, RandomAccessIterator last, Compare cmp = Compare());
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	template<class RandomAccessIterator, class Compare = std::less<typename iterator_traits<RandomAccessIterator>::value_type> >
+	void sort_heap(RandomAccessIterator first, RandomAccessIterator last, Compare cmp = Compare());
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	template<class RandomAccessIterator, class Compare = std::less<typename iterator_traits<RandomAccessIterator>::value_type> >
+	inline void make_heap(RandomAccessIterator first, RandomAccessIterator last, Compare cmp = Compare());
+
+
 
 	template<class RandomAccessIterator,class Compare>
 	inline void push_heap(RandomAccessIterator first, RandomAccessIterator last, Compare cmp) {
@@ -84,7 +100,7 @@ namespace mystl
 
 	template<class RandomAccessIterator,class Compare>
 	void sort_heap(RandomAccessIterator first, RandomAccessIterator last, Compare cmp) {
-		while (last - first > 1) pop_heap(first, last--, cmp);
+		while (last - first > 1) mystl::pop_heap(first, last--, cmp);
 	}
 
 	template<class RandomAccessIterator,class Compare>
@@ -98,10 +114,12 @@ namespace mystl
 		Distance holeIndex = (len - 2) / 2;
 		while (true)
 		{
+			if (first == nullptr)puts("1");
 			_adjust_heap(first, holeIndex, len, *(first + holeIndex), cmp);
 			if (holeIndex == 0)return;
 			holeIndex--;
 		}
 	}
+
 }
 #endif

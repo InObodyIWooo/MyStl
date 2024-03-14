@@ -15,10 +15,10 @@ namespace mystl
 	public:
 		typedef T					value_type;
 		typedef value_type*			pointer;
-		typedef const pointer		const_iterator;
+		typedef const value_type*	const_iterator;
 		typedef value_type*			iterator;
 		typedef value_type&			reference;
-		typedef const reference		const_reference;
+		typedef const value_type&	const_reference;
 		typedef size_t				size_type;
 		typedef ptrdiff_t			difference_type;
 	protected:
@@ -30,18 +30,19 @@ namespace mystl
 
 	public:
 		iterator begin()  { return start; }
-		const_iterator cbegin() const { return start; }
+		const_iterator begin() const { return start; }
 		iterator end()  { return finish; }
-		const_iterator cend() const { return finish; }
+		const_iterator end() const { return finish; }
 
-		size_type size()  { return size_type(end() - begin()); }
+		size_type size()  const { return size_type(end() - begin()); }
 		size_type capacity() const { return size_type(end_heap - start); }
 		bool empty() const { return begin() == end(); }
 		reference operator[](size_type n) { return *(begin() + n); }
 
-		const_reference front()  { return *(begin()); }
-		const_reference back()  { return *(end() - 1); }
-
+		reference front()  { return *(begin()); }
+		const_reference front() const { return *(begin()); }
+		reference back()  { return *(end() - 1); }
+		const_reference back() const { return *(end() - 1); }
 	protected:
 
 		//插入元素，当容器已满时自动扩容，除push_back()调用过外 其他用途未知
@@ -66,6 +67,14 @@ namespace mystl
 		vector() :start(nullptr), finish(nullptr), end_heap(nullptr) {}
 		vector(size_type n, const_reference value) { initialize_fill(n, value); }
 		explicit vector(size_type n) { initialize_fill(n, value_type()); }
+		template<class InputIterator>
+		vector(InputIterator first, InputIterator last) {
+			int n = last - first;
+			iterator res = data_alloc::allocate(n);
+			uninitialized_copy(first, last, res);
+			start = res;
+			end_heap = finish = start + n;
+		}
 
 		~vector() {
 			destroy(start,finish);
