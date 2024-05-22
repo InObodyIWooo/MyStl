@@ -4,7 +4,7 @@
 #ifndef __STL_VECTOR_H
 #define __STL_VECTOR_H
 
-#include "stl_alloc.h"
+#include "../stl_alloc.h"
 
 namespace mystl
 {

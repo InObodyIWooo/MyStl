@@ -51,26 +51,29 @@
     <ClInclude Include="Project\include\type_traits.h">
       <Filter>头文件\stl_tool</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\vector.h">
+    <ClInclude Include="Project\include\SequenceContainer\vector.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\list.h">
+    <ClInclude Include="Project\include\SequenceContainer\list.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\deque.h">
+    <ClInclude Include="Project\include\SequenceContainer\deque.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\stack.h">
+    <ClInclude Include="Project\include\SequenceContainer\stack.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\queue.h">
+    <ClInclude Include="Project\include\SequenceContainer\queue.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\priority_queue.h">
+    <ClInclude Include="Project\include\SequenceContainer\priority_queue.h">
       <Filter>头文件\containers\A</Filter>
     </ClInclude>
-    <ClInclude Include="Project\include\heap.h">
+    <ClInclude Include="Project\include\SequenceContainer\heap.h">
       <Filter>头文件\containers\A</Filter>
+    </ClInclude>
+    <ClInclude Include="Project\include\AssociativeContainer\rb_tree.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

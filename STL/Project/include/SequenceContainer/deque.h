@@ -3,7 +3,7 @@
 #ifndef __STL_DEQUE_H
 #define __STL_DEQUE_H
 
-#include "stl_alloc.h"
+#include "../stl_alloc.h"
 
 
 namespace mystl

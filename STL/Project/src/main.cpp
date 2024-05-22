@@ -5,13 +5,14 @@
 #include "../include/stl_alloc.h"
 #include "../include/stl_construct.h"
 #include "../include/stl_uninitialized.h"
-#include "../include/vector.h"
-#include "../include/list.h"
-#include "../include/deque.h"
-#include "../include/stack.h"
-#include "../include/queue.h"
-#include "../include/heap.h"
-#include "../include/priority_queue.h"
+#include "../include/SequenceContainer/vector.h"
+#include "../include/SequenceContainer/list.h"
+#include "../include/SequenceContainer/deque.h"
+#include "../include/SequenceContainer/stack.h"
+#include "../include/SequenceContainer/queue.h"
+#include "../include/SequenceContainer/heap.h"
+#include "../include/SequenceContainer/priority_queue.h"
+#include "../include/AssociativeContainer/rb_tree.h"
 
 #include <vector>
 #include <list>
